@@ -2,17 +2,18 @@ import Path from "path";
 import FileSystem from "fs";
 import { defineConfig } from "vite";
 import monkeyPlugin, { type MonkeyUserScript } from "vite-plugin-monkey";
+import { version, author, description } from "./package.json";
 
 const entry = Path.join(__dirname, "src", "main.ts");
 if (!FileSystem.existsSync(entry))
 	throw new Error(`${entry} not found`);
 
 const userscriptOptions: MonkeyUserScript = {
+	version,
+	author,
+	description,
 	name: "WeMeet On Time",
-	version: "1.1.0",
-	author: "true_mogician",
 	namespace: "https://github.com/truemogician",
-	description: "Allows you to join a WeMeet meeting at a specific time.",
 	match: ["https://meeting.tencent.com/dm/*"],
 	"run-at": "document-idle"
 };
