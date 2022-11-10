@@ -9,7 +9,7 @@ if (!FileSystem.existsSync(entry))
 
 const userscriptOptions: MonkeyUserScript = {
 	name: "WeMeet On Time",
-	version: "1.0.0",
+	version: "1.1.0",
 	author: "true_mogician",
 	namespace: "https://github.com/truemogician",
 	description: "Allows you to join a WeMeet meeting at a specific time.",

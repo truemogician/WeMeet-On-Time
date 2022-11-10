@@ -1,3 +1,5 @@
+import localizations from "./lang";
+
 interface MeetingInfo {
 	code: number;
 
@@ -56,27 +58,33 @@ function getMeetingInfo(root?: Document): MeetingInfo {
 	const cancelBanner = document.getElementById("msgWrapCtrl");
 	if (cancelBanner)
 		return;
+
 	const config = JSON.parse(localStorage.getItem("config") ?? "{}") as Config;
 	const page = getPageState();
+	const localization = localizations[page.language];
+
 	const meeting = getMeetingInfo();
 	const now = Date.now();
 	if (meeting.startTime.getTime() <= now)
 		return;
+
 	const buttonsWrapper = document.getElementById("btnWrapCtrl")!;
 	const buttonClasses = new Set(Array.from(document.querySelectorAll("#mpJoinBtnCtrl")).flatMap(e => Array.from(e.classList)));
 	const joinLaterBtn = document.createElement("button");
 	joinLaterBtn.id = "join-later-btn";
 	joinLaterBtn.className = Array.from(buttonClasses).filter(n => /^join-button_(?:main|confirm)/.test(n)).join(" ");
-	joinLaterBtn.textContent = page.language === "English" ? "Join On Time" : "准时入会";
+	joinLaterBtn.textContent = localization.buttonName;
 	joinLaterBtn.addEventListener("click", e => {
 		const self = e.currentTarget as HTMLButtonElement;
 		const timerId = self.hasAttribute("data-timer-id") ? Number.parseInt(self.getAttribute("data-timer-id")!) : null;
 		if (timerId != null) {
 			clearInterval(timerId);
 			self.removeAttribute("data-timer-id");
-			self.textContent = page.language === "English" ? "Join On Time" : "准时入会";
+			self.textContent = localization.buttonName;
 		}
 		else {
+			if (meeting.hasPassword)
+				alert(localization.passwordAlert);
 			const joinTime = new Date(meeting.startTime.getTime() - (config.timingAdvance ?? 0));
 			if (joinTime.getTime() <= now)
 				joinMeeting(meeting.code);
@@ -96,7 +104,7 @@ function getMeetingInfo(root?: Document): MeetingInfo {
 							delay = Math.floor(delay / 60);
 						}
 						const timeText = components.map(n => n.toString().padStart(2, "0")).join(":");
-						self.textContent = page.language === "English" ? `Joining in ${timeText}` : `${timeText} 后入会`;
+						self.textContent = localization.buttonCountdown.replace("$1", timeText);
 					}
 				}, 1000);
 				self.setAttribute("data-timer-id", timer.toString());
