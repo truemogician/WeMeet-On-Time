@@ -13,7 +13,7 @@ interface MeetingInfo {
 interface PageState {
 	loggedIn: boolean;
 
-	language: "English" | "简体中文";
+	language: "English" | "简体中文" | "";
 }
 
 interface Config {
@@ -53,7 +53,7 @@ function getMeetingInfo(root?: Document): MeetingInfo {
 	return meeting;
 }
 
-(function () {
+function main() {
 	// Do nothing if the meeting has been canceled.
 	const cancelBanner = document.getElementById("msgWrapCtrl");
 	if (cancelBanner)
@@ -61,6 +61,8 @@ function getMeetingInfo(root?: Document): MeetingInfo {
 
 	const config = JSON.parse(localStorage.getItem("config") ?? "{}") as Config;
 	const page = getPageState();
+	if (page.language == null || page.language == "")
+		throw new Error("Language not detected.");
 	const localization = localizations[page.language];
 
 	const meeting = getMeetingInfo();
@@ -126,4 +128,14 @@ function getMeetingInfo(root?: Document): MeetingInfo {
 		}
 	});
 	observer.observe(buttonsWrapper, { childList: true, subtree: true });
-})();
+}
+
+const timer = setImmediateInterval(() => {
+	try {
+		main();
+		clearInterval(timer);
+	}
+	catch (e) {
+		console.error(e);
+	}
+}, 1000);
