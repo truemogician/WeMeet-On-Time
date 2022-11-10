@@ -1,0 +1,15 @@
+{
+	"include": ["src/**/*.ts"],
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "Node16",
+		"sourceMap": true,
+		"moduleResolution": "Node16",
+		"esModuleInterop": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"resolveJsonModule": true,
+		"strict": true,
+		"noImplicitAny": false
+	}
+}
